@@ -1,0 +1,50 @@
+--- ./include/vlc_playlist.h.org	2017-04-08 16:33:45.000000000 +0200
++++ ./include/vlc_playlist.h	2017-04-08 16:34:22.000000000 +0200
+@@ -26,2 +26,5 @@
+ 
++#include <vlc_input.h>
++#include <vlc_events.h>
++
+ # ifdef __cplusplus
+@@ -30,5 +33,2 @@
+ 
+-#include <vlc_input.h>
+-#include <vlc_events.h>
+-
+ TYPEDEF_ARRAY(playlist_item_t*, playlist_item_array_t)
+--- ./include/vlc_atomic.h.org	2017-04-08 15:22:51.000000000 +0200
++++ ./include/vlc_atomic.h	2017-04-08 15:46:37.000000000 +0200
+@@ -34,2 +34,6 @@
+ 
++#elif defined (__cplusplus)
++
++#include <atomic>
++
+ # else
+@@ -404,4 +408,12 @@
+ 
++#if defined (__cplusplus)
++
++typedef std::atomic_uint_least32_t vlc_atomic_float;
++
++#else
++
+ typedef atomic_uint_least32_t vlc_atomic_float;
+ 
++#endif
++
+ static inline void vlc_atomic_init_float(vlc_atomic_float *var, float f)
+--- ./modules/gui/qt4/dialogs/messages.hpp.org	2017-04-08 16:42:00.000000000 +0200
++++ ./modules/gui/qt4/dialogs/messages.hpp	2017-04-08 16:42:13.000000000 +0200
+@@ -57,3 +57,3 @@
+ 
+-    atomic_uint verbosity;
++    std::atomic_uint verbosity;
+     static void MsgCallback( void *, int, const vlc_log_t *, const char *,
+--- ./modules/gui/qt4/dialogs/messages.cpp.org	2017-04-08 16:43:44.000000000 +0200
++++ ./modules/gui/qt4/dialogs/messages.cpp	2017-04-08 16:44:11.000000000 +0200
+@@ -145,3 +145,3 @@
+ {
+-    atomic_store( &this->verbosity, i_verbosity );
++    atomic_store( &this->verbosity, (unsigned)i_verbosity );
+ }

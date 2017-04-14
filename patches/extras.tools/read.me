@@ -1,0 +1,94 @@
+# synopsis
+
+cd extra/tools
+tar xf ../../../extras.tools/downloads.tar
+./bootstrap
+make m4
+patch -p1 m4/lib/stdio.in.h ../../../extras.tools/patch.m4.lib.stdio.in.h
+patch -p1 tools.mak ../../../extras.tools/patch.tools.mak
+time make 2>&1 | tee log.make
+
+# download sites
+
+http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
+http://www.cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
+http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
+http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+http://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz
+http://ftp.gnu.org/gnu/m4/m4-1.4.16.tar.gz
+http://downloads.sourceforge.net/project/pkgconfiglite/0.28-1/pkg-config-lite-0.28-1.tar.gz
+http://ftp.gnu.org/gnu/tar/tar-1.26.tar.bz2
+http://tukaani.org/xz/xz-5.2.2.tar.bz2
+http://git.libav.org/?p=gas-preprocessor.git;a=snapshot;h=72887b9;sf=tgz
+http://www.colm.net/files/ragel/ragel-6.8.tar.gz
+http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.bz2
+http://downloads.videolan.org/pub/contrib/apache-ant-1.9.7-bin.tar.bz2
+
+# create Makefile for packages that have not been found
+
+$ ./bootstrap 
+autoconf not found
+automake not found
+m4 not found
+libtool not found
+cmake not found
+yasm not found
+ragel not found
+
+# Makefile
+
+make: .autoconf .automake .m4 .libtool .cmake .yasm .ragel
+
+autoconf-2.69.tar.gz
+automake-1.15.tar.gz
+cmake-2.8.12.2.tar.gz
+libtool-2.4.2.tar.gz
+m4-1.4.16.tar.gz
+pkg-config-0.28-1.tar.gz
+ragel-6.8.tar.gz
+yasm-1.2.0.tar.gz
+
+# pkg-config is build as dependency -- even though it is already installed
+
+# patch m4
+
+cat -vt patch.m4.lib.stdio.in.h ; echo "--"
+--- m4/lib/stdio.in.h.org^I2017-03-28 10:24:03.894497198 +0200
++++ m4/lib/stdio.in.h^I2017-03-28 10:24:08.274543841 +0200
+@@ -164,3 +164,5 @@
+ #undef gets
++#if HAVE_RAW_DECL_GETS
+ _GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");
++#endif
+ 
+--
+
+# patch tools.mak
+
+cat -vt patch.tools.mak ; echo "--"
+--- tools.mak.org^I2017-03-28 09:18:59.037594078 +0200
++++ tools.mak^I2017-03-28 10:05:55.707275999 +0200
+@@ -12,2 +12,4 @@
+ export AUTOCONF
++PATH:=$(PATH):$(PREFIX)/bin
++export PATH
+ 
+@@ -86,3 +88,3 @@
+ 
+-.libtool: libtool .automake
++.libtool: libtool .automake .m4
+ ^I(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+@@ -139,3 +141,4 @@
+ 
+-.autoconf: autoconf .pkg-config
++.autoconf: autoconf .pkg-config .m4
++^Iecho $(PATH)
+ ^I(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+@@ -156,3 +159,3 @@
+ 
+-.automake: automake .autoconf
++.automake: automake .autoconf .m4
+ ^I(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+--
+
+
