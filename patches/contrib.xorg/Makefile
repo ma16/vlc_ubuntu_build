@@ -1,5 +1,3 @@
-#DOWNLOADS=$(CURDIR)/downloads
-#PREFIX=$(CURDIR)/x86_64-linux-gnu
 CONFIG=$(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig
 
 all: .build/.xorg

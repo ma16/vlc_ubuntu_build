@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 if [[ $# -ne 3 ]] ; then
   echo "arguments: download-dir patch-dir install-dir" 1>&2
@@ -12,7 +12,7 @@ VLC="$PWD/vlc-2.2.4"
 CONTRIB="$VLC/contrib"
 
 # you may want to enable parallel makes..
-# MAKEFLAGS="-j6 -O"
+export MAKEFLAGS="$MAKEFLAGS"
 
 rm -fr vlc-2.2.4
 tar xf "$DOWNLOADS/vlc-2.2.4.tar.xz"
@@ -34,7 +34,7 @@ ln -s "$PATCHES/contrib.xorg/Makefile" .
 MAKEFLAGS_BAK="$MAKEFLAGS"
 unset MAKEFLAGS
 make PREFIX="$INST/x86_64-linux-gnu" DOWNLOADS="$DOWNLOADS"
-MAKEFLAGS="$MAKEFLAGS_BAK"
+export MAKEFLAGS="$MAKEFLAGS_BAK"
 cd "$INST" && tar cf xorg.x86_64-linux-gnu.tar x86_64-linux-gnu && rm -fr x86_64-linux-gnu
 
 # make contrib.keysyms (HAVE_XCB_KEYSYMS)
