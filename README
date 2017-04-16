@@ -100,7 +100,12 @@ for f in ffmpeg qt5 vlc ; do tar xf "$f.x86_64-linux-gnu.tar" ; done
 cd "$ROOT"
 ma16/test.sh /usr/local_vlc downloads/big_buck_bunny.mp4
 # ...this should provide video and sound, without any errors on the console
+
+# use a wrapper for the LD_LIBRARAY_PATH...
 mv /usr/local_vlc/x86_64-linux-gnu/bin/vlc /usr/local_vlc/x86_64-linux-gnu/bin/vlc.org
-cp ma16/downloads/wrapper.sh /usr/local_vlc/x86_64-linux-gnu/bin/vlc
-/usr/local_vlc/x86_64-linux-gnu/bin/vlc downloads/big_buck_bunny.mp4
-# if successful, you can remove the build directory
+cp ma16/wrapper.sh /usr/local_vlc/x86_64-linux-gnu/bin/vlc
+# ...and test it
+cp downloads/big_buck_bunny.mp4 ..
+cd ..
+# eventually you wanna: rm -fr build
+/usr/local_vlc/x86_64-linux-gnu/bin/vlc big_buck_bunny.mp4
